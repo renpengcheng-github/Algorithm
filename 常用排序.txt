@@ -1,0 +1,74 @@
+#---------------------------------------------------------------------------------------------------------
+#637  树的遍历
+求一棵树每一层节点的平均值  root输出他本身
+def averageOfLevels(self, root):
+    info = []
+    def dfs(node, depth = 0):#递归调用
+        if node:
+            if len(info) <= depth:
+                info.append([0, 0])#每往下推进一次，添加一个数组 否则直接操作就超出范围
+            info[depth][0] += node.val
+            info[depth][1] += 1
+            dfs(node.left, depth + 1)
+            dfs(node.right, depth + 1)
+    dfs(root)
+
+    return [s/float(c) for s, c in info] #遍历info中的每一个list  [s,c]
+
+注意在python中树的定义和用法
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+BFS版本：
+    def averageOfLevels(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[float]
+        """
+        res=[]
+        if not root: return res
+        q=[root]
+        while q:
+            q1=[]
+            total=0
+            cnt=0
+            while q:
+                node =q.pop()
+                if node.left: q1.append(node.left)
+                if node.right: q1.append(node.right)
+                total+=node.val
+                cnt+=1
+            res.append(total*1.0/cnt)
+            q=list(q1)
+        return res
+#---------------------------------------------------------------------------------------------------------
+#404  树左叶子节点相加  输入一棵树 输出左叶子结点和sum
+1：判断一个节点是否是叶子节点
+2：如果root为空 树是空的  输出0
+3：拿到一个节点的左孩子值 且判断这个值是否为叶子节点 是就是要找的
+class Solution(object):
+    def sumOfLeftLeaves(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        if root==None:
+            return 0
+        res=0
+        if root.left and self.isleaf(root.left):
+            res+=root.left.val
+        res+=self.sumOfLeftLeaves(root.left)+self.sumOfLeftLeaves(root.right)
+        return res
+    def isleaf(self,root):
+        if root.left==None and root.right==None:
+            return True
+#-----------------------------------------------------------------------------------------------------------
+快速排序
+
+
+
+
+

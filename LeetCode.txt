@@ -1,0 +1,181 @@
+#476  
+#给定正整数，输出其补数
+#5 是101 补数 010 输出2  1是1 补数是0 输出0
+class Solution(object):
+    def findComplement(self, num):
+        i = 1
+        while i <= num:
+            i = i << 1
+        return (i - 1) ^ num
+
+<< 左移位符号，二进制向左移若干位，低位补0
+^  异或运算 ，7 是111 5是101 7^5是010 不一样的为1 一样的为0
+
+本题思路 取比num大的2的N次方-1  得到和i相同长度的全1二进制数，取异或运算即可得到补数
+难度，想到  “和i相同长度的全1二进制数” 是如何取得的
+#---------------------------------------------------------------------------------------------------------
+#500
+#'qwertyuiop'
+'asdfghjkl'
+第二题，给出键盘，输入字符串数组，输出用键盘相同行打出来的字符串
+例如输入["Hello", "Alaska", "Dad", "Peace"]  输出 ["Alaska", "Dad"] 因为其他字符串字母跨行了
+思路：设定2个字符串  循环遍历每个字符串的每个字母，若有不在一行，则不返回此字符串
+函数x  判定字母在哪一行
+函数word（重要）	取得每一个字符串，一个字符为标志位，遍历以后字符，若有不同 return 0
+函数findWords	取得每一个字符串，若返回1 ，添加到输出列表，特殊情况若字符串长度只有1，也输出 
+class Solution(object):
+    def findWords(self, words):
+        """
+        :type words: List[str]
+        :rtype: List[str]
+        """
+        li=[]
+        for str in words:
+            if len(str)==1:
+                li.append(str)
+            else:
+                if self.word(str)==1:
+                    li.append(str)
+        return li
+
+    def word(self,str):
+        str1='qwertyuiop'
+        str2='asdfghjkl'
+        flag=self.x(str1, str2, str[0].lower())
+        for s in str[1:]:
+            if self.x(str1, str2, s.lower())!=flag:
+                return 0
+        return 1
+    
+    def x(self,str1,str2,letter):
+        if letter in str1:
+            temp = 1
+        elif letter in str2:
+            temp = 2
+        else:
+            temp = 3
+        return temp
+		
+#---------------------------------------------------------------------------------------------------------
+#第三题
+557
+输入:"Let's take LeetCode contest"
+Output: "s'teL ekat edoCteeL tsetnoc"
+把每个词倒序
+str[::-1] 这个不仅适用于列表，也适用于字符串
+class Solution(object):
+    def reverseWords(self, s):
+        """
+        :type s: str
+        :rtype: str
+        """
+        l=s.split(' ')
+        li=[]
+        for str in l:
+            li.append(str[::-1])
+        return ' '.join(li)#注意列表转字符串方法
+
+#---------------------------------------------------------------------------------------------------------
+#第四题
+566
+nums = 
+[[1,2],
+ [3,4]]
+r = 1, c = 4
+Output: 
+[[1,2,3,4]]
+reshape一个矩阵\
+
+class Solution(object):
+    def matrixReshape(self, nums, r, c):
+        """
+        :type nums: List[List[int]]
+        :type r: int
+        :type c: int
+        :rtype: List[List[int]]
+        """
+        l=[]
+        sum=0
+        for x in range(len(nums)):
+            l.extend(nums[x])
+            sum+=len(nums[x])#计数 有多少个元素
+        if r*c==sum:
+            return [[l[x+y*c] for x in xrange(c)] for y in xrange(r)]#对下标进行操作
+        else:
+            return numsaaaaaaaaaaa
+r行c列
+[[x for x in range(c)] for y in range(r)]
+这个x 要随下标改变遍历数组 即为l[x+y*c] 第c行x个词
+
+#---------------------------------------------------------------------------------------------------------
+#637  树的遍历
+求一棵树每一层节点的平均值  root输出他本身
+def averageOfLevels(self, root):
+    info = []
+    def dfs(node, depth = 0):#递归调用
+        if node:
+            if len(info) <= depth:
+                info.append([0, 0])#每往下推进一次，添加一个数组 否则直接操作就超出范围
+            info[depth][0] += node.val
+            info[depth][1] += 1
+            dfs(node.left, depth + 1)
+            dfs(node.right, depth + 1)
+    dfs(root)
+
+    return [s/float(c) for s, c in info] #遍历info中的每一个list  [s,c]
+
+注意在python中树的定义和用法
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+BFS版本：
+    def averageOfLevels(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[float]
+        """
+        res=[]
+        if not root: return res
+        q=[root]
+        while q:
+            q1=[]
+            total=0
+            cnt=0
+            while q:
+                node =q.pop()
+                if node.left: q1.append(node.left)
+                if node.right: q1.append(node.right)
+                total+=node.val
+                cnt+=1
+            res.append(total*1.0/cnt)
+            q=list(q1)
+        return res
+#---------------------------------------------------------------------------------------------------------
+#404  树左叶子节点相加  输入一棵树 输出左叶子结点和sum
+1：判断一个节点是否是叶子节点
+2：如果root为空 树是空的  输出0
+3：拿到一个节点的左孩子值 且判断这个值是否为叶子节点 是就是要找的
+class Solution(object):
+    def sumOfLeftLeaves(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        if root==None:
+            return 0
+        res=0
+        if root.left and self.isleaf(root.left):
+            res+=root.left.val
+        res+=self.sumOfLeftLeaves(root.left)+self.sumOfLeftLeaves(root.right)
+        return res
+    def isleaf(self,root):
+        if root.left==None and root.right==None:
+            return True
+
+
+
+
+
